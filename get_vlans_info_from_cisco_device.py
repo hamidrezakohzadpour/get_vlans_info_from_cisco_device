@@ -11,21 +11,34 @@ def str_date_time():
     str_time = now.strftime("%H%M%S")
     return "_" + str_date + "_" + str_time
 
-if not os.path.exists("configs"):
-    os.mkdir("configs")
-if not os.path.exists("configs\\device_ip.txt"):
+def input_file_address():
+    OSNAME = (os.name)
+    if OSNAME == "nt":
+        return 'configs\\device_ip.txt'
+    elif OSNAME == "posix":
+        return 'configs/device_ip.txt'
+
+def output_file_address():
+    OSNAME = (os.name)
+    if OSNAME == "nt":
+        return 'configs\\device_vlans.csv'
+    elif OSNAME == "posix":
+        return 'configs/device_vlans.csv'
+   
+if not os.path.exists(input_file_address()):
+    os.mkdir('config')
     file = open("configs\\device_ip.txt", 'a')
     print (Fore.RED + "Please add IP Addresses to configs\\device_ip.txt" + Fore.WHITE)
     file.close()
     exit()
-with open ("configs\\device_ip.txt",'r') as f:
+with open (input_file_address(),'r') as f:
     devices_list = f.read().splitlines()
     f.close()
 for ip_address in devices_list:
     Switch = { 
             "hostname": ip_address,
-            "username": "username",
-            "password": "password",
+            "username": "keshavarz",
+            "password": "keshavarz",
             "optional_args": {"secret": "password"} 
             }
     try:
@@ -41,19 +54,13 @@ for ip_address in devices_list:
         print(Fore.RED + f"Unknown Err!. {Switch['hostname']}" + Fore.WHITE)
     else:
         #Make output file
-        output_file_name = "configs\\device_vlans.csv"
-        with open ( output_file_name, 'a') as f:
+        with open (output_file_address(), 'a') as f:
             print (Fore.GREEN + "Connected....")
             vlan_dict = Device.get_vlans()
             for vlan in vlan_dict:
                 #===================================================================================================================================
                 #Add 1 line in file with comma seprator for each cisco device VLANs
                 print (Switch['hostname']+ "," + vlan +  "," + str(vlan_dict[vlan]["name"]),file=f )
-                #===================================================================================================================================
-                #Add 1 line in file with comma seprator for each cisco device VLANs with [interfaces]
-                #for i in vlan_dict[vlan]["interfaces"]:
-                #    print (Switch['hostname']+ "," + vlan +  "," + str(vlan_dict[vlan]["name"]) + "," + i ,file=f )
-                #===================================================================================================================================
             print(Fore.GREEN + "Pass...." + Fore.WHITE)
             f.close()
             Device.close()
