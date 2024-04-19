@@ -37,8 +37,8 @@ with open (input_file_address(),'r') as f:
 for ip_address in devices_list:
     Switch = { 
             "hostname": ip_address,
-            "username": "keshavarz",
-            "password": "keshavarz",
+            "username": "username",
+            "password": "password",
             "optional_args": {"secret": "password"} 
             }
     try:
