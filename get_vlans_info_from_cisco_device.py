@@ -27,7 +27,7 @@ def output_file_address():
    
 if not os.path.exists(input_file_address()):
     os.mkdir('config')
-    file = open("configs\\device_ip.txt", 'a')
+    file = open(input_file_address(), 'a')
     print (Fore.RED + "Please add IP Addresses to configs\\device_ip.txt" + Fore.WHITE)
     file.close()
     exit()
